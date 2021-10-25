@@ -7,29 +7,34 @@ author:
     url: https://github.com/drjgauthier
     affiliation: Fred Hutch/University of Washington
 date: "`r Sys.Date()`"
-output: distill::distill_article
+output: 
+  distill::distill_article:
+    code_folding: false
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-library(tidyverse)
 ```
 
 ## Simulate longitudinal data
 
-```{r}
+```{r, echo=TRUE}
 df <- data.frame(matrix(nrow = 29, ncol = 40))
 for (i in 1:40) {
     df[,i] <- rnorm(29,1000,250) + runif(29,0,100000)
 }
 df <- cbind(c(0:28),df)
 colnames(df) <- c("timepoint",paste0(rep("var_",40),c(1:40)))
+library(rmarkdown)
+paged_table(df)
 ```
 
 ## Wrangle and graph all variables in one plot
 
-```{r, layout="l-body-outset",fig.width=10, fig.height=8}
-var_names <- dput(names(df[,-1])) # Build vector with levels in order
+```{r, layout="l-body-outset",fig.width=10, fig.height=8,echo=TRUE}
+var_names <- dput(names(df[,-1])) # Create vector with variable levels in the right order
+library(tidyverse)
 df %>%
   pivot_longer(cols = "var_1":"var_40",
                names_to = "variable",
